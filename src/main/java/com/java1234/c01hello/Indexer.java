@@ -53,12 +53,6 @@ public class Indexer {
      * @throws Exception
      */
     public void createIndex(IndexWriter writer, String dataDir) throws Exception {
-        for (String s : writer.getDirectory().listAll()) {
-            if (s.equals("write.lock")) {
-                continue;
-            }
-            writer.getDirectory().deleteFile(s);
-        }
         File[] files = new File(dataDir).listFiles();
         for (File f : files) {
             System.out.println("索引文件：" + f.getCanonicalPath());
