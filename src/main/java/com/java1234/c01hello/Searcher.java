@@ -23,11 +23,10 @@ public class Searcher {
      * @param args
      */
     public static void main(String[] args) {
-        String indexDir = "E:\\luceneTest\\dataIndex";
+        String indexDir = "E:\\luceneTest\\indexDir";
         String q = "License";
         try {
             Directory dir = FSDirectory.open(Paths.get(indexDir));
-
             IndexReader reader = DirectoryReader.open(dir);
             IndexSearcher is = new IndexSearcher(reader);
             Analyzer analyzer = new StandardAnalyzer();
