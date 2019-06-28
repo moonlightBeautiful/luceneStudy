@@ -12,101 +12,87 @@ import org.apache.lucene.store.FSDirectory;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.nio.file.Paths;
 
 public class Indexer {
-    /**
-     * index写入器，用来构建index
-     */
-    private IndexWriter writer;
 
     /**
-     * 构造方法 实例化IndexWriter
+     * 为索引写入器指定目录和分词器,会在索引目录中创建文件write.lock
      *
-     * @param indexDir 索引目录
-     * @throws Exception
+     * @param indexDir 索引所在的目录
+     * @return
+     * @throws IOException
      */
-    public Indexer(String indexDir) throws Exception {
+    public IndexWriter getIndexWriter(String indexDir) throws IOException {
+        // 目录
         Directory dir = FSDirectory.open(Paths.get(indexDir));
         // 标准分词器
         Analyzer analyzer = new StandardAnalyzer();
         IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
-        writer = new IndexWriter(dir, iwc);
+        // 初始化索引写入器：如果目录不存在，则自动穿件
+        IndexWriter writer = new IndexWriter(dir, iwc);
+        return writer;
     }
 
     /**
-     * 关闭index写入器
+     * 关闭索引写入器
      *
+     * @param writer
      * @throws Exception
      */
-    public void close() throws Exception {
+    public void closeIndexWriter(IndexWriter writer) throws Exception {
         writer.close();
     }
 
     /**
-     * 索引指定目录
+     * 对指定目录创建索引：在索引目录中创建fdt和fdx文件
      *
-     * @param dataDir 指定目录
+     * @param dataDir 数据目录
+     * @param dataDir 数据目录
      * @throws Exception
      */
-    public int index(String dataDir) throws Exception {
+    public void createIndex(IndexWriter writer, String dataDir) throws Exception {
+        for (String s : writer.getDirectory().listAll()) {
+            if (s.equals("write.lock")) {
+                continue;
+            }
+            writer.getDirectory().deleteFile(s);
+        }
         File[] files = new File(dataDir).listFiles();
         for (File f : files) {
-            indexFile(f);
+            System.out.println("索引文件：" + f.getCanonicalPath());
+            Document doc = new Document();
+            doc.add(new TextField("fileName", f.getName(), Field.Store.YES));
+            doc.add(new TextField("fullPath", f.getCanonicalPath(), Field.Store.YES));
+            doc.add(new TextField("contents", new FileReader(f)));
+            writer.addDocument(doc);
         }
-        return writer.numDocs();
     }
 
-    /**
-     * 索引指定文件
-     *
-     * @param f 指定文件
-     */
-    private void indexFile(File f) throws Exception {
-        System.out.println("索引文件：" + f.getCanonicalPath());
-        Document doc = getDocument(f);
-        writer.addDocument(doc);
-    }
 
     /**
-     * 为指定为文件创建文档对象
-     *
-     * @param f 指定文件
-     */
-    private Document getDocument(File f) throws Exception {
-        Document doc = new Document();
-        doc.add(new TextField("contents", new FileReader(f)));
-        doc.add(new TextField("fileName", f.getName(), Field.Store.YES));
-        doc.add(new TextField("fullPath", f.getCanonicalPath(), Field.Store.YES));
-        return doc;
-    }
-
-    /**
-     * 建立索引
+     * 索引测试：初始化索引写入器(指定目录和分词器)、构建索引（索引写入器添加文档(文档有字段和值组成)）、关闭索引写入器
      *
      * @param args
      */
     public static void main(String[] args) {
-        String indexDir = "E:\\luceneTest\\dataIndex";
-        String dataDir = "E:\\luceneTest\\data";
-        Indexer indexer = null;
-        int numIndexed = 0;
-        long start = System.currentTimeMillis();
+        String indexDir = "E:\\luceneTest\\indexDir";
+        String dataDir = "E:\\luceneTest\\dataDir";
+        IndexWriter indexWriter = null;
+        Indexer indexer = new Indexer();
         try {
-            indexer = new Indexer(indexDir);
-            numIndexed = indexer.index(dataDir);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
+            indexWriter = indexer.getIndexWriter(indexDir);
+            long start = System.currentTimeMillis();
+            indexer.createIndex(indexWriter, dataDir);
+            int numIndexed = indexWriter.numDocs();
+            indexer.closeIndexWriter(indexWriter);
+            long end = System.currentTimeMillis();
+            System.out.println("索引了：" + numIndexed + " 个文件 花费了" + (end - start) + " 毫秒");
+        } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                indexer.close();
-            } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        long end = System.currentTimeMillis();
-        System.out.println("建立索引，索引：" + numIndexed + " 个文件 花费了" + (end - start) + " 毫秒");
     }
 }
