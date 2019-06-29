@@ -37,6 +37,7 @@ public class IndexingWeightStudy {
      * @throws Exception
      */
     private IndexWriter getIndexWriter(String indexDir) throws Exception {
+        //先删除掉目录中的文件
         File file = new File(indexDir);
         if (file.exists()) {
             for (File fileTemp : file.listFiles()) {

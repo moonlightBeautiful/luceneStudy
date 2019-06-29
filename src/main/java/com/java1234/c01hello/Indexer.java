@@ -25,6 +25,13 @@ public class Indexer {
      * @throws IOException
      */
     public IndexWriter getIndexWriter(String indexDir) throws IOException {
+        //先删除掉目录中的文件
+        File file = new File(indexDir);
+        if (file.exists()) {
+            for (File fileTemp : file.listFiles()) {
+                fileTemp.delete();
+            }
+        }
         // 目录
         Directory dir = FSDirectory.open(Paths.get(indexDir));
         // 标准分词器
