@@ -18,7 +18,7 @@ import java.nio.file.Paths;
 public class Indexer {
 
     /**
-     * 为索引写入器指定目录和分词器,会在索引目录中创建文件write.lock
+     * 得到索引写入器：为索引写入器指定目录和分词器,会在索引目录中创建文件write.lock
      *
      * @param indexDir 索引所在的目录
      * @return
