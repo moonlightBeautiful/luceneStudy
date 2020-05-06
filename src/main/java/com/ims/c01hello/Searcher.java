@@ -1,4 +1,4 @@
-package com.java1234.c01hello;
+package com.ims.c01hello;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -15,32 +15,35 @@ import org.apache.lucene.store.FSDirectory;
 
 import java.nio.file.Paths;
 
+/**
+ * 2.使用索引搜索数据
+ */
 public class Searcher {
 
-    /**
-     * 在建立的索引上搜索
-     *
-     * @param args
-     */
     public static void main(String[] args) {
-        String indexDir = "E:\\luceneTest\\indexDir";
-        String q = "License";
+        String indexDir = "E:\\Lucene\\indexDir";
+        String queryContent = "License";
         try {
             Directory dir = FSDirectory.open(Paths.get(indexDir));
-            IndexReader reader = DirectoryReader.open(dir);
-            IndexSearcher is = new IndexSearcher(reader);
+            //
+            IndexReader indexReader = DirectoryReader.open(dir);
+            IndexSearcher indexSearcher = new IndexSearcher(indexReader);
+            //
             Analyzer analyzer = new StandardAnalyzer();
-            QueryParser parser = new QueryParser("contents", analyzer);
-            Query query = parser.parse(q);
+            QueryParser queryParser = new QueryParser("contents", analyzer);
+            Query query = queryParser.parse(queryContent);
+            //
             long start = System.currentTimeMillis();
-            TopDocs hits = is.search(query, 10);
+            TopDocs hits = indexSearcher.search(query, 10); //10，查前10条数据
             long end = System.currentTimeMillis();
-            System.out.println("匹配 " + q + " ，总共花费" + (end - start) + "毫秒" + "查询到了" + hits.totalHits + "个记录");
+            System.out.println("共花费" + (end - start) + "毫秒，" + "查询到了" + hits.totalHits + "个文本文件，包含" + queryContent);
+            //
             for (ScoreDoc scoreDoc : hits.scoreDocs) {
-                Document doc = is.doc(scoreDoc.doc);
+                Document doc = indexSearcher.doc(scoreDoc.doc);
                 System.out.println(doc.get("fullPath"));
             }
-            reader.close();
+            //
+            indexReader.close();
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
