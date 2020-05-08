@@ -1,4 +1,4 @@
-package com.java1234.c03weight;
+package com.ims.c03indexWriterWeight;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;

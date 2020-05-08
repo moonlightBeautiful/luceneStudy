@@ -1,10 +1,7 @@
-package com.java1234.c05smartcnANDhighlighter;
+package com.ims.c05smartcnANDhighlighter;
 
-import com.java1234.c01hello.Indexer;
-import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.cn.smart.SmartChineseAnalyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.*;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
@@ -20,7 +17,6 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.file.Paths;

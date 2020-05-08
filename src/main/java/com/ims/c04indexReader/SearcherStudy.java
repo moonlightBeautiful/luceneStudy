@@ -1,15 +1,12 @@
-package com.java1234.c04searcher;
+package com.ims.c04indexReader;
 
-import com.java1234.c01hello.Indexer;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.*;
 import org.apache.lucene.index.*;
-import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.util.BytesRef;
 
 import java.io.File;
 import java.io.FileReader;

@@ -1,4 +1,4 @@
-package com.ims.c02indexCrud;
+package com.ims.c02indexWriterCrud;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
