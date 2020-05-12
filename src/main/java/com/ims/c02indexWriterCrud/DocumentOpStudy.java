@@ -10,10 +10,22 @@ import org.apache.lucene.index.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 
 public class DocumentOpStudy {
+
+    /**
+     * 测试数据
+     */
+    private String ids[] = {"1", "2", "3"};
+    private String citys[] = {"qingdao", "nanjing", "shanghai"};
+    private String descs[] = {
+            "Qingdao is a beautiful city.",
+            "Nanjing is a city of culture.",
+            "Shanghai is a bustling city."
+    };
 
     private IndexWriter indexWriter;
 
@@ -25,6 +37,13 @@ public class DocumentOpStudy {
      * @throws IOException
      */
     public IndexWriter getIndexWriter(String indexDir) throws Exception {
+        //先删除掉目录中的文件
+        File file = new File(indexDir);
+        if (file.exists()) {
+            for (File fileTemp : file.listFiles()) {
+                fileTemp.delete();
+            }
+        }
         // 索引目录
         Directory dir = FSDirectory.open(Paths.get(indexDir));
         // 标准分词器，对文本内容进行分词。比如 英文 is a 空格 去掉
@@ -52,13 +71,6 @@ public class DocumentOpStudy {
      * @throws Exception
      */
     public void createIndex(IndexWriter indexWriter) throws Exception {
-        String ids[] = {"1", "2", "3"};
-        String citys[] = {"qingdao", "nanjing", "shanghai"};
-        String descs[] = {
-                "Qingdao is a beautiful city.",
-                "Nanjing is a city of culture.",
-                "Shanghai is a bustling city."
-        };
         for (int i = 0; i < ids.length; i++) {
             Document doc = new Document();
             doc.add(new StringField("id", ids[i], Field.Store.YES));

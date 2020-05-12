@@ -12,6 +12,7 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Paths;
 
 public class IndexingWeightStudy {
@@ -30,9 +31,12 @@ public class IndexingWeightStudy {
             "For example: with Java 1.4, `LetterTokenizer` will split around the character U+02C6,"
     };
 
+    private IndexWriter indexWriter;
+
     /**
-     * 获取IndexWriter实例
+     * 初始化并打开索引写入器：索引目录和分词器,会在索引目录中创建文件write.lock
      *
+     * @param indexDir 索引目录
      * @return
      * @throws Exception
      */
@@ -46,19 +50,31 @@ public class IndexingWeightStudy {
         }
         // 索引所在目录
         Directory dir = FSDirectory.open(Paths.get(indexDir));
-        // 标准分词器
+        // 标准分词器，对文本内容进行分词。比如 英文 is a 空格 去掉
         Analyzer analyzer = new StandardAnalyzer();
         IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
-        IndexWriter indexWriter = new IndexWriter(dir, iwc);
+        // 初始化索引写入器：如果目录不存在，会自动创建
+        indexWriter = new IndexWriter(dir, iwc);
         return indexWriter;
     }
 
     /**
-     * 生成索引
+     * 关闭索引写入器：就像是流一样，需要关闭
      *
+     * @param indexWriter 索引写入器
      * @throws Exception
      */
-    public void createIndex(IndexWriter writer) throws Exception {
+    public void closeIndexWriter(IndexWriter indexWriter) throws Exception {
+        indexWriter.close();
+    }
+
+    /**
+     * 为索引数据创建索引：在索引目录中会创建fdt和fdx文件
+     *
+     * @param indexWriter 索引写入器
+     * @throws IOException
+     */
+    public void createIndex(IndexWriter indexWriter) throws IOException {
         for (int i = 0; i < ids.length; i++) {
             Document doc = new Document();
             doc.add(new StringField("id", ids[i], Field.Store.YES));
@@ -69,31 +85,22 @@ public class IndexingWeightStudy {
             if ("boss".equals(positions[i])) {
                 field.setBoost(1.5f);
             }
-            // 对某个文档的某个域加权操作 ↑
             doc.add(field);
+            // 对某个文档的某个域加权操作 ↑
             doc.add(new TextField("content", contents[i], Field.Store.NO));
-            writer.addDocument(doc);
+            indexWriter.addDocument(doc);
         }
     }
 
-    /**
-     * 关闭索引写入器
-     *
-     * @param writer
-     * @throws Exception
-     */
-    public void closeIndexWriter(IndexWriter writer) throws Exception {
-        writer.close();
-    }
 
     public static void main(String[] args) {
         IndexingWeightStudy iws = new IndexingWeightStudy();
-        String indexDir = "E:\\luceneTest\\indexDir";
-        IndexWriter indexWriter = null;
+        String indexDir = "F:\\luceneTest\\indexDir";
         try {
-            indexWriter = iws.getIndexWriter(indexDir);
+            /*IndexWriter indexWriter = iws.getIndexWriter(indexDir);
             iws.createIndex(indexWriter);
-            iws.closeIndexWriter(indexWriter);
+            iws.closeIndexWriter(indexWriter);*/
+
             Directory dir = FSDirectory.open(Paths.get(indexDir));
             IndexReader indexReader = DirectoryReader.open(dir);
             IndexSearcher indexSearcher = new IndexSearcher(indexReader);
