@@ -14,11 +14,14 @@
         建议：在不忙的时候，在进行合并操作
     4.更新：修改前后的分词都存在，因为曾经拥有。
 3.构建索引的时候对文档域加权
-    对某个文档的某个域加权(>1的f)，则在搜索到的时候排名会靠前：TopDocs hits = indexSearcher.search(query, number);
+    对某个文档的某个域加权(>1的f)，则在这个域中搜索指定内容时，搜索到数据时，这个文档的排名会靠前：
+        Term term = new Term(“域”, searchContent);
+        Query query = new TermQuery(term);
+        TopDocs hits = indexSearcher.search(query, number);
     1.权：就是比重，默认搜索的内容占搜索字段的百分比大小。默认为1
         field.setBoost(1.5f);
     2.域：文档的字段field，doc.add(field)，字段可以加权，加权后被搜索到的概率就大了。
-    3.项：一个文档是一项term，项里面有很多域（也就是很多字段）
+    
 4.查询器：Query，查询指定的项，查询器有很多种，可以对查询内容进行解析。
 4.lucene 文档查询
     使用查询器进行文档某一项进行查询，查询器有很多种
