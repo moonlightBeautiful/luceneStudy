@@ -46,9 +46,13 @@
         BooleanQuery.Builder booleanQuery = new BooleanQuery.Builder();
         booleanQuery.add(query1, BooleanClause.Occur.MUST); // MUST且 SHOULD或 MUST_NOT不包含
         booleanQuery.add(query2, BooleanClause.Occur.MUST);
-5.
-
-lucene 中文分词器,要用到新的jar包
-    不仅仅会对textField字段的内容分词，也会丢查询的内容分词。
- 6.lucene 高亮显示,要用到新的jar包
-    对搜索到的结果进行处理，html格式。
+5.其他重要项
+    1.中文分词器,要用到新的jar包 lucene-analyzers-smartcn
+        标准分词器的话：Analyzer analyzer = new StandardAnalyzer();
+            仅仅会对textField项的内容分词，分成一个一个单独的字
+        中文分词器的话： SmartChineseAnalyzer analyzer = new SmartChineseAnalyzer();
+            仅仅会对textField项的内容分词，分成一个一个独立的单词
+            也会对该项查询的内容分词。
+    2.高亮显示,要用到新的jar包 lucene-highlighter
+        对搜索到的结果中搜索的内容进行html格式化处理
+        SimpleHTMLFormatter、QueryScorer、Fragmenter、Highlighter、TokenStream
