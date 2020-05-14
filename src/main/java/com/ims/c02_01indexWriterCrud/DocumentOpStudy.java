@@ -1,4 +1,4 @@
-package com.ims.c02indexWriterCrud;
+package com.ims.c02_01indexWriterCrud;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -92,19 +92,15 @@ public class DocumentOpStudy {
             docOperationStudy.indexWriter = docOperationStudy.getIndexWriter(indexDirStr);
             docOperationStudy.createIndex(docOperationStudy.indexWriter);
             docOperationStudy.closeIndexWriter(docOperationStudy.indexWriter);*/
-            /**
-             *  构建索引后，获取索引
-             */
 
-
-            //写入了几个文档：indexWriter
+            //文档操作：索引添加文档
            /*
             DocumentOpStudy docOperationStudy = new DocumentOpStudy();
             docOperationStudy.indexWriter = docOperationStudy.getIndexWriter(indexDirStr);
             System.out.println("写入了:" + docOperationStudy.indexWriter.numDocs() + "个文档");
             docOperationStudy.closeIndexWriter(docOperationStudy.indexWriter);*/
 
-            //文档数目：indexReader
+            //文档操作：读取索引
             /*Directory indexDir = FSDirectory.open(Paths.get(indexDirStr));
             IndexReader indexReader = DirectoryReader.open(indexDir);
             System.out.println("最大文档数：" + indexReader.maxDoc());  //包含所有被标记的文档

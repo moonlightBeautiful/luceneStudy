@@ -1,4 +1,4 @@
-package com.ims.c03indexWriterWeight;
+package com.ims.c02_02indexWriterWeight;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
